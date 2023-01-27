@@ -1,0 +1,27 @@
+const generes: Array<string> = [
+  "Action",
+  "Adventure",
+  "Animation",
+  "Anime",
+  "Biography",
+  "Children",
+  "Comedy",
+  "Crime",
+  "Documentary",
+  "Drama",
+  "Family",
+  "Fantasy",
+  "Food",
+  "History",
+  "Horror",
+  "Music",
+  "Mystery",
+  "Romance",
+  "Science-Fiction",
+  "Sport",
+  "Thriller",
+  "War",
+  "Western",
+];
+
+export { generes };

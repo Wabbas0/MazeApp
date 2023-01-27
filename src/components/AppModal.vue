@@ -1,0 +1,298 @@
+<template>
+  <div class="modal">
+    <div class="overlay" @click="closeModal"></div>
+    <div class="modal_content">
+      <div class="item_content clearfix">
+        <template v-if="showItemInfo">
+          <aside class="poster">
+            <figure>
+              <img :src="urlImg" />
+            </figure>
+            <div v-if="rating">
+              <RatingIndicator
+                :score="rating"
+                size="82"
+                stroke-width="5"
+                stroke-color="#ff6633"
+              />
+              <i>Rating</i>
+            </div>
+          </aside>
+          <section class="info">
+            <h1>{{ title }}</h1>
+            <p v-html="description"></p>
+            <h2 class="label">
+              <font-awesome-icon :icon="icon" size="1x" class="icon" />&nbsp;
+              Premiered Date
+            </h2>
+            <p>{{ this.date }}</p>
+            <div v-if="genres.length > 0">
+              <h2 class="label">Genres</h2>
+              <ul>
+                <li v-for="(g, index) in genres" :key="index">{{ g }}</li>
+              </ul>
+            </div>
+            <div v-if="itemInfo.cast">
+              <h2 class="label">CAST</h2>
+              <p>{{ itemInfo.cast }}</p>
+            </div>
+            <div>
+              <h2 class="label">Seasons and Episodes</h2>
+              <p>
+                {{ itemInfo.seasons }} seasons -
+                {{ itemInfo.episodes }} episodes
+              </p>
+            </div>
+            <div v-if="runtime">
+              <h2 class="label">Run time</h2>
+              <p>{{ runtime }} minutes</p>
+            </div>
+          </section>
+        </template>
+        <template v-else>
+          <Vue3Lottie
+            :animationData="loadingIndicator"
+            :height="150"
+            :width="150"
+          />
+        </template>
+      </div>
+      <button title="Close" class="close_modal" @click="closeModal">
+        <font-awesome-icon icon="times" transform="shrink-6" size="1x" />
+      </button>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import RatingIndicator from "./RatingIndicator.vue";
+import { useShowsStore } from "../stores/shows";
+
+import { mapState } from "pinia";
+import dayjs from "dayjs";
+import loadingtv from "../assets/loadingtv.json";
+
+export default {
+  name: "App-modal",
+  components: { RatingIndicator },
+  computed: {
+    ...mapState(useShowsStore, ["itemInfo"]),
+    showItemInfo(): any {
+      return !Object.keys(this.itemInfo).length ? false : true;
+    },
+    title(): any {
+      return this.itemInfo && this.itemInfo.show
+        ? this.itemInfo.show.name
+        : this.itemInfo.name;
+    },
+    description(): any {
+      return this.itemInfo && this.itemInfo.show
+        ? this.itemInfo.show.summary
+        : this.itemInfo.summary;
+    },
+    urlImg(): any {
+      if (this.itemInfo && this.itemInfo.show) {
+        return this.itemInfo.show && this.itemInfo.show.image != null
+          ? this.itemInfo.show.image.medium || this.itemInfo.show.image.original
+          : import("../assets/images/poster-not-available.png");
+      }
+      return this.itemInfo && this.itemInfo.image != null
+        ? this.itemInfo.image.medium || this.itemInfo.image.original
+        : import("../assets/images/poster-not-available.png");
+    },
+    genres(): any {
+      return this.itemInfo && this.itemInfo.show
+        ? this.itemInfo.show.genres.map((element) => element.toUpperCase())
+        : this.itemInfo.genres.map((element) => element.toUpperCase());
+    },
+    date(): any {
+      return this.itemInfo && this.itemInfo.show
+        ? dayjs(this.itemInfo.show.premiered).format("MMM D, YYYY")
+        : dayjs(this.itemInfo.premiered).format("MMM D, YYYY");
+    },
+    icon(): string {
+      return "tv";
+    },
+    rating(): any {
+      if (
+        this.itemInfo.show &&
+        this.itemInfo.show.rating &&
+        this.itemInfo.show.rating.average !== null
+      ) {
+        return this.itemInfo.show.rating.average;
+      }
+      if (
+        this.itemInfo &&
+        this.itemInfo.rating &&
+        this.itemInfo.rating.average !== null
+      ) {
+        return this.itemInfo.rating.average;
+      }
+      return "";
+    },
+    runtime(): any {
+      return this.itemInfo && this.itemInfo.show
+        ? this.itemInfo.show.runtime
+        : this.itemInfo.runtime;
+    },
+  },
+  methods: {
+    closeModal() {
+      this.$emit("close-modal");
+    },
+  },
+  data() {
+    return {
+      loadingIndicator: loadingtv,
+    };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+figure {
+  margin: 0 0 1em;
+}
+img {
+  width: 100%;
+  height: auto;
+  border-radius: 7px;
+}
+h1 {
+  margin-top: 0;
+  font-size: 2em;
+  color: $color-primary;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+li {
+  display: inline;
+  padding: 4px;
+  margin-right: 5px;
+  background-color: $color-tags;
+  color: $color-text-secondary;
+  font-size: 0.9em;
+}
+
+p {
+  margin: 0;
+  line-height: 1.4;
+  color: $scrollbar-color-thumb;
+}
+button {
+  color: $color-text-secondary;
+}
+a {
+  display: inline-block;
+  color: $color-text-secondary;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px dotted $color-text-secondary;
+  &:hover {
+    color: $color-primary;
+  }
+}
+.item_content {
+  padding: 2em;
+}
+.poster {
+  display: block;
+  margin-bottom: 2em;
+  text-align: center;
+  color: $scrollbar-color-thumb;
+}
+.info {
+  display: block;
+}
+.label {
+  margin: 2em 0 0.2em;
+  font-family: $font-secondary, sans-serif;
+  color: $color-secondary;
+  font-size: 1em;
+  text-transform: uppercase;
+}
+.web a {
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 990;
+  .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 995;
+    background: $modal-background-overlay;
+  }
+  .modal_content {
+    z-index: 999;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: $modal-background;
+    box-shadow: 0 1px 5px $modal-color-shadow;
+    text-align: left;
+    border-radius: 4px;
+    width: 780px; /* This just a default width */
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    .buttons_wrapper {
+      padding: 20px;
+    }
+    &::-webkit-scrollbar {
+      border-radius: 10px;
+      width: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $scrollbar-color-thumb;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background: $scrollbar-color-track;
+    }
+  }
+  .close_modal {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    background: none;
+    border: none;
+    transition: opacity 0.2s ease;
+    &:hover {
+      color: $color-primary;
+    }
+  }
+}
+@include sm {
+  .poster {
+    float: left;
+    margin: 0;
+    width: 33%;
+    text-align: center;
+  }
+  .info {
+    display: block;
+    padding-left: 2em;
+    margin-left: 33%;
+  }
+}
+</style>
