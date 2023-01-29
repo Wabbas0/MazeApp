@@ -40,17 +40,7 @@ export default {
 
     return { shows };
   },
-  created() {
-    this.loadInitialData();
-  },
   methods: {
-    loadInitialData() {
-      try {
-        this.shows.getInitialData();
-      } catch (e) {
-        // this.error = "Error: configuration not loaded";
-      }
-    },
     toggleModal() {
       this.showModal = !this.showModal;
     },

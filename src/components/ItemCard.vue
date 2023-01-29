@@ -12,7 +12,15 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+
+type Item = {
+  show: {
+    name?: string;
+    image?: { medium: string; orginal: string };
+  };
+};
+export default defineComponent({
   name: "ItemCard",
   props: {
     item: Object,
@@ -39,7 +47,7 @@ export default {
       this.$emit("item-clicked", this.item);
     },
   },
-};
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

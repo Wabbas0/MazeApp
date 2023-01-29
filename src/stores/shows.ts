@@ -121,11 +121,6 @@ export const useShowsStore = defineStore("shows", {
         this.loading = false;
       }
     },
-    // any amount of arguments, return a promise or not
-    getInitialData: async function () {
-      // move this to store??
-      await AppServices.getTvShowsOnAir();
-    },
     getItem: async function (item) {
       this.RESET_ITEM();
       const itemId = item && item.show ? item.show.id : item.id;

@@ -1,12 +1,10 @@
 <template>
   <div>
     <div class="message">
-      <!-- <div v-if="showResults && totalResults > 0">
-        Results found for
-        <span class="query">{{ query }}</span>
-        : {{ totalResults }}
-      </div>
-      <div v-else><p>There are no matches for you search.</p></div> -->
+      <!-- <div v-if="!showResults && totalResults.length == 0">
+        <p>There are no matches for you search.</p>
+      </div> -->
+      -->
     </div>
 
     <ItemList
@@ -53,10 +51,6 @@ export default {
     this.shows.searchShows("INIT", this.query);
   },
   methods: {
-    // computeLoadMore(total) {
-    //   this.totalPages = Math.round(total / 250);
-    // },
-
     viewDetailInfo(item: any) {
       try {
         this.shows.getItem(item);
