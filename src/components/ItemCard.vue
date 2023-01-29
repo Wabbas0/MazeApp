@@ -38,7 +38,9 @@ export default defineComponent({
         : import("../assets/images/poster-not-available.png");
     },
     title() {
-      return this.item && this.item.show ? this.item.show.name : this.item.name;
+      return this.item && this.item.show
+        ? this.item.show.name
+        : this.item?.name;
     },
   },
   methods: {
