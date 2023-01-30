@@ -1,61 +1,51 @@
 <template>
   <div>
-    <h2 class="title">
-      {{ viewTitle }}
-    </h2>
+    <h2 class="title">Shows</h2>
     <ItemList
       :loading="shows.loading"
       :results="shows.filteredGenre"
       :selectedGenre="shows.selectedGenre"
       type="tv"
-      @item-clicked="viewDetailInfo"
+      @item-clicked="viewMoreInfo"
     />
     <ItemListMore
       :loading="shows.loading"
       :loadMore="loadMore"
-      @view-more="shows.getShows('MORE')"
+      @view-more="fetchShows('MORE')"
     />
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { onBeforeMount, computed, getCurrentInstance } from "vue";
 import ItemList from "../components/ItemList.vue";
 import ItemListMore from "../components/ItemListMore.vue";
 import { useShowsStore } from "../stores/shows";
+import { useRouter } from "vue-router";
 
-export default {
-  name: "TvShowsView",
-  setup() {
-    const shows = useShowsStore();
+const shows = useShowsStore();
+const { currentRoute } = useRouter();
+const instance = getCurrentInstance();
 
-    return { shows };
-  },
-  components: {
-    ItemList,
-    ItemListMore,
-  },
-  computed: {
-    loadMore() {
-      return this.shows.totalPages === this.shows.page ? true : false;
-    },
-    viewTitle() {
-      return "Shows";
-    },
-  },
-  created() {
-    this.shows.getShows("INIT");
-  },
-  methods: {
-    viewDetailInfo(item) {
-      try {
-        this.shows.getItem(item);
-        this.$emit("open-modal");
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  },
+const fetchShows = (action: string) =>
+  currentRoute.value.meta.viewByCountry
+    ? shows.fetchCountryShows(action)
+    : shows.fetchShows(action);
+
+onBeforeMount(() => {
+  fetchShows("INIT");
+});
+
+const viewMoreInfo = (item) => {
+  shows.getItem(item);
+  if (instance) {
+    i;
+  }
 };
+
+const loadMore = computed(() =>
+  shows.totalPages === shows.page ? true : false
+);
 </script>
 
 <style lang="scss" scoped></style>
