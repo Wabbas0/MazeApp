@@ -14,12 +14,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-type Item = {
-  show: {
-    name?: string;
-    image?: { medium: string; orginal: string };
-  };
-};
 export default defineComponent({
   name: "ItemCard",
   props: {
@@ -45,7 +39,6 @@ export default defineComponent({
   },
   methods: {
     viewDetail() {
-      console.log("clicked");
       this.$emit("item-clicked", this.item);
     },
   },

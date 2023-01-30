@@ -38,7 +38,7 @@ export default {
     },
   },
   created() {
-    this.shows.getShows("INIT");
+    this.shows.fetchShows("INIT");
   },
   methods: {
     viewDetailInfo(item) {

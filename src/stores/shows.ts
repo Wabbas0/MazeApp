@@ -1,6 +1,21 @@
 import AppServices from "../services/appServices";
 import { defineStore } from "pinia";
-import { useRouter } from "vue-router";
+
+export interface ShowItem {
+  id: string;
+  show: {
+    name?: string;
+    image?: { medium: string; original: string };
+    genres: Array<string>;
+    id: string;
+  };
+  image?: { medium: string; original: string };
+  name?: string;
+  rating: {
+    average: number | "null";
+  };
+  genres: Array<string>;
+}
 
 export const useShowsStore = defineStore("shows", {
   state: () => ({
@@ -26,11 +41,11 @@ export const useShowsStore = defineStore("shows", {
       return state.selectedGenre;
     },
     sortedShows: (state) => {
-      const results = state.results.filter(function (item) {
+      const results = state.results.filter(function (item: ShowItem) {
         return item.rating.average !== null && item.rating.average !== "null";
       });
 
-      return results.sort(function (a, b) {
+      return results.sort((a: ShowItem, b: ShowItem) => {
         if (a.rating.average !== null) {
           if (a.rating.average < b.rating.average) {
             return 1;
@@ -50,7 +65,7 @@ export const useShowsStore = defineStore("shows", {
         state.selectedGenre != "all"
       ) {
         if (state.results) {
-          results = state.results.filter((item) => {
+          results = state.results.filter((item: ShowItem) => {
             return item && item.show
               ? item.show.genres.includes(state.selectedGenre)
               : item.genres.includes(state.selectedGenre);
@@ -66,8 +81,7 @@ export const useShowsStore = defineStore("shows", {
      */
   },
   actions: {
-    async getShows(action: string) {
-      const router = useRouter();
+    async fetchShows(action: string) {
       if (action == "INIT") {
         this.results = [];
         this.page = 1;
@@ -77,21 +91,31 @@ export const useShowsStore = defineStore("shows", {
         this.loading = true;
       }
       try {
-        if (router.currentRoute.value.meta.viewByCountry) {
-          const response = await AppServices.getShowsByCountry();
-          this.results =
-            action == "INIT"
-              ? response.data
-              : this.results.concat(response.data);
-          this.setTotalPages(Math.round(this.results.length / 250));
-        } else {
-          const response = await AppServices.getShows(this.page);
-          this.results =
-            action == "INIT"
-              ? response.data
-              : this.results.concat(response.data);
-          this.setTotalPages(Math.round(this.results.length / 250));
-        }
+        const response = await AppServices.getShows(this.page);
+        this.results =
+          action == "INIT" ? response.data : this.results.concat(response.data);
+        this.setTotalPages(Math.round(this.results.length / 250));
+      } catch (e: any) {
+        if (action == "MORE") this.page--;
+        this.error = e;
+      } finally {
+        this.loading = false;
+      }
+    },
+    async fetchCountryShows(action: string) {
+      if (action == "INIT") {
+        this.results = [];
+        this.page = 1;
+        this.loading = true;
+      } else {
+        this.page++;
+        this.loading = true;
+      }
+      try {
+        const response = await AppServices.getShowsByCountry();
+        this.results =
+          action == "INIT" ? response.data : this.results.concat(response.data);
+        this.setTotalPages(Math.round(this.results.length / 250));
       } catch (e: any) {
         if (action == "MORE") this.page--;
         this.error = e;
@@ -121,7 +145,7 @@ export const useShowsStore = defineStore("shows", {
         this.loading = false;
       }
     },
-    getItem: async function (item) {
+    getItem: async function (item: ShowItem) {
       this.RESET_ITEM();
       const itemId = item && item.show ? item.show.id : item.id;
       const [responseCast, responseSeasons, responseEpisodes] =
@@ -145,10 +169,10 @@ export const useShowsStore = defineStore("shows", {
     RESET_ITEM() {
       this.itemInfo = {};
     },
-    LOAD_ITEM({ info, cast, seasons, episodes }) {
+    LOAD_ITEM({ info, cast, seasons, episodes }: any) {
       const itemInfo = info;
       let castDetails = "";
-      cast.forEach((element) => {
+      cast.forEach((element: any) => {
         if (castDetails !== "") {
           castDetails = castDetails + ", " + element.person.name;
         } else {

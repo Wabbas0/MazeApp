@@ -9,7 +9,7 @@
     <div class="genre-container">
       <AppSearch />
       <select @change="genreSelected">
-        <option :value="selectedGenre" selected>Select genre</option>
+        <option :value="shows.selectedGenre" selected>Select genre</option>
         <option value="all">All</option>
         <option v-for="(genre, index) in generes" :key="index" v-bind="$attrs">
           {{ genre }}
