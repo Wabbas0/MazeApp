@@ -146,7 +146,7 @@ export const useShowsStore = defineStore("shows", {
       }
     },
     getItem: async function (item: ShowItem) {
-      this.RESET_ITEM();
+      this.resetItem();
       const itemId = item && item.show ? item.show.id : item.id;
       const [responseCast, responseSeasons, responseEpisodes] =
         await Promise.all([
@@ -155,7 +155,7 @@ export const useShowsStore = defineStore("shows", {
           AppServices.getEpisodes(itemId),
         ]);
 
-      this.LOAD_ITEM({
+      this.loadItem({
         info: item,
         cast: responseCast.data,
         seasons: responseSeasons.data.length,
@@ -163,13 +163,13 @@ export const useShowsStore = defineStore("shows", {
       });
     },
 
-    LOAD_CONF(baseUrl: string) {
+    loadConf(baseUrl: string) {
       this.baseUrl = baseUrl;
     },
-    RESET_ITEM() {
+    resetItem() {
       this.itemInfo = {};
     },
-    LOAD_ITEM({ info, cast, seasons, episodes }: any) {
+    loadItem({ info, cast, seasons, episodes }: any) {
       const itemInfo = info;
       let castDetails = "";
       cast.forEach((element: any) => {

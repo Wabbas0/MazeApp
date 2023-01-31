@@ -17,7 +17,6 @@
 </template>
 
 <script lang="ts">
-import { RouterView } from "vue-router";
 import AppNavigation from "./components/AppNavigation.vue";
 import AppFooter from "./components/AppFooter.vue";
 import AppModal from "./components/AppModal.vue";
@@ -34,11 +33,6 @@ export default {
     return {
       showModal: false,
     };
-  },
-  setup() {
-    const shows = useShowsStore();
-
-    return { shows };
   },
   methods: {
     toggleModal() {

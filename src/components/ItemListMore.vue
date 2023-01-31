@@ -1,7 +1,12 @@
 <template>
   <div>
     <div v-show="loadMore" class="more-container">
-      <span v-if="loading">Loading...</span>
+      <Vue3Lottie
+        v-if="loading"
+        :animationData="loadingtv"
+        :height="150"
+        :width="150"
+      />
       <a href="#" @click.prevent="viewMoreData" v-else>
         <span>Load more results</span>
       </a>
@@ -10,9 +15,14 @@
 </template>
 
 <script lang="ts">
+import loadingtv from "../assets/loadingtv.json";
+
 export default {
   name: "ItemListMore",
   props: ["loading", "loadMore"],
+  data() {
+    return { loadingtv };
+  },
   methods: {
     viewMoreData() {
       this.$emit("view-more");
@@ -38,7 +48,7 @@ export default {
     text-decoration: none;
     cursor: pointer;
     &:hover {
-      border-color: $color-text-secondary;
+      background-color: rgb(243, 192, 0);
       color: $color-text-secondary;
     }
   }

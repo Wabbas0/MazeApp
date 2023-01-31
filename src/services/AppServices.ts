@@ -2,7 +2,7 @@ import { API } from "@/services/api";
 import type { LocationQueryValue } from "vue-router";
 
 const country = "US";
-export type Query = LocationQueryValue | Array<LocationQueryValue> | string
+export type Query = LocationQueryValue | Array<LocationQueryValue> | string;
 
 export default {
   search(query: Query, page?: number) {
