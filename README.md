@@ -3,7 +3,8 @@
 This App is built with Vue 3 and Vite and consume tvmaze API. Through the application we can display a few popular TV shows based on their rating and genre. When the user clicks on a TV show then the details of that TV show should
 be displayed on another screen. Also, the user should be able to search for a TV show to get
 the details.
-[Vite App.webm](https://user-images.githubusercontent.com/19857965/215636977-6a11cab6-305b-44e1-9250-2b3e625876a7.webm)
+
+https://user-images.githubusercontent.com/19857965/215636977-6a11cab6-305b-44e1-9250-2b3e625876a7.webm
 
 ## Recommended IDE Setup
 
