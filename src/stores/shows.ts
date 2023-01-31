@@ -1,4 +1,4 @@
-import AppServices from "../services/appServices";
+import AppServices, { type Query } from "../services/appServices";
 import { defineStore } from "pinia";
 
 export interface ShowItem {
@@ -124,7 +124,7 @@ export const useShowsStore = defineStore("shows", {
       }
     },
 
-    async searchShows(action: string, query: string) {
+    async searchShows(action: string, query: Query) {
       if (action == "INIT") {
         this.page = 1;
         this.loading = true;

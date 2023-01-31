@@ -5,56 +5,46 @@
       :results="getTopShows()"
       :selectedGenre="shows.selectedGenre"
       type="tv"
-      @item-clicked="viewDetailInfo"
+      @item-clicked="viewMoreInfo"
     />
     <ItemListMore
       :selectedGenre="shows.selectedGenre"
       :loading="shows.loading"
       :loadMore="loadMore"
-      @view-more="shows.getShows('MORE')"
+      @view-more="fetchShows('MORE')"
     />
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { onBeforeMount, computed, getCurrentInstance } from "vue";
 import ItemList from "../components/ItemList.vue";
 import ItemListMore from "../components/ItemListMore.vue";
-import { useShowsStore } from "../stores/shows";
+import { useShowsStore, type ShowItem } from "../stores/shows";
 
-export default {
-  name: "TopShowsView",
-  components: {
-    ItemList,
-    ItemListMore,
-  },
-  setup() {
-    const shows = useShowsStore();
+const shows = useShowsStore();
+const instance = getCurrentInstance();
 
-    return { shows };
-  },
-  computed: {
-    loadMore() {
-      return this.shows.totalPages > this.shows.page ? true : false;
-    },
-  },
-  created() {
-    this.shows.fetchShows("INIT");
-  },
-  methods: {
-    viewDetailInfo(item) {
-      try {
-        this.shows.getItem(item);
-        this.$emit("open-modal");
-      } catch (e) {
-        console.log(e);
-      }
-    },
+const fetchShows = (action: string) => shows.fetchShows(action);
 
-    getTopShows() {
-      return this.shows.filteredGenre && this.shows.sortedShows;
-    },
-  },
+onBeforeMount(() => {
+  fetchShows("INIT");
+});
+
+const viewMoreInfo = (item: ShowItem) => {
+  shows.getItem(item);
+  if (instance) {
+    instance.emit("open-modal");
+  }
 };
+
+const getTopShows = () => {
+  return shows.filteredGenre && shows.sortedShows;
+};
+
+const loadMore = computed(() =>
+  shows.totalPages === shows.page ? true : false
+);
 </script>
 
 <style lang="scss" scoped></style>

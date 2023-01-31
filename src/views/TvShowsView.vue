@@ -20,7 +20,7 @@
 import { onBeforeMount, computed, getCurrentInstance } from "vue";
 import ItemList from "../components/ItemList.vue";
 import ItemListMore from "../components/ItemListMore.vue";
-import { useShowsStore } from "../stores/shows";
+import  { useShowsStore, type ShowItem } from "../stores/shows";
 import { useRouter } from "vue-router";
 
 const shows = useShowsStore();
@@ -36,10 +36,10 @@ onBeforeMount(() => {
   fetchShows("INIT");
 });
 
-const viewMoreInfo = (item) => {
+const viewMoreInfo = (item: ShowItem) => {
   shows.getItem(item);
   if (instance) {
-    i;
+    instance.emit("open-modal");
   }
 };
 

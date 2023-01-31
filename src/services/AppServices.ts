@@ -1,9 +1,11 @@
 import { API } from "@/services/api";
+import type { LocationQueryValue } from "vue-router";
 
 const country = "US";
+export type Query = LocationQueryValue | Array<LocationQueryValue> | string
 
 export default {
-  search(query: string, page?: number) {
+  search(query: Query, page?: number) {
     const url = `search/shows?q=${query}&page=${page}`;
     return API.get(url);
   },

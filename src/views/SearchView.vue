@@ -11,7 +11,7 @@
       :results="shows.filteredGenre"
       :selectedGenre="shows.selectedGenre"
       type="multi"
-      @item-clicked="viewDetailInfo"
+      @item-clicked="viewMoreInfo"
     />
     <ItemListMore
       :loading="shows.loading"
@@ -21,46 +21,31 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { onBeforeMount, computed, getCurrentInstance, ref } from "vue";
 import ItemList from "../components/ItemList.vue";
 import ItemListMore from "../components/ItemListMore.vue";
-import { useShowsStore } from "../stores/shows";
+import { useShowsStore, type ShowItem } from "../stores/shows";
+import { useRoute } from "vue-router";
 
-export default {
-  name: "SearchView",
-  components: {
-    ItemList,
-    ItemListMore,
-  },
-  setup() {
-    const shows = useShowsStore();
+const shows = useShowsStore();
+const instance = getCurrentInstance();
+const query = ref(useRoute().query.q);
 
-    return { shows };
-  },
-  data() {
-    return {
-      query: this.$route.query.q,
-    };
-  },
-  computed: {
-    loadMore() {
-      return this.shows.totalPages === this.shows.page ? true : false;
-    },
-  },
-  created() {
-    this.shows.searchShows("INIT", this.query);
-  },
-  methods: {
-    viewDetailInfo(item: any) {
-      try {
-        this.shows.getItem(item);
-        this.$emit("open-modal");
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  },
+onBeforeMount(() => {
+  shows.searchShows("INIT", query.value);
+});
+
+const viewMoreInfo = (item: ShowItem) => {
+  shows.getItem(item);
+  if (instance) {
+    instance.emit("open-modal");
+  }
 };
+
+const loadMore = computed(() =>
+  shows.totalPages === shows.page ? true : false
+);
 </script>
 
 <style lang="scss" scoped>
